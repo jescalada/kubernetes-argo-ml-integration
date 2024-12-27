@@ -1,11 +1,11 @@
-FROM python:3.9-slim
+# Use the TensorFlow Serving image as a base
+FROM tensorflow/serving:latest
 
-# Copy your application code
-WORKDIR /app
-COPY . .
+# Copy the model into the expected directory for TensorFlow Serving
+COPY model/ /models/my_model/1/
 
-# Install dependencies
-RUN pip install --no-cache-dir -r requirements.txt
+# Set the environment variables
+ENV MODEL_NAME=my_model
 
-# Run your application (if needed)
-CMD ["python", "model_training.py"]
+# Expose the default TensorFlow Serving port
+EXPOSE 8501
