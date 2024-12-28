@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tf-model-deployment
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: tf-model
+  template:
+    metadata:
+      labels:
+        app: tf-model
+    spec:
+      containers:
+      - name: tf-model
+        image: jescalada/my-tf-model:latest
+        ports:
+        - containerPort: 8501
