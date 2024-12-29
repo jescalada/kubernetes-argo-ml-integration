@@ -60,3 +60,52 @@ curl -X POST http://localhost:<node-port>/v1/models/my_model:predict -d '{"insta
 ```powershell
 Invoke-WebRequest -Uri http://localhost:<node-port>/v1/models/my_model:predict -Method POST -Body '{"instances": [[0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0]]}' -ContentType "application/json"
 ```
+
+## Setting up ArgoCD
+
+1. Install ArgoCD by executing the following commands:
+```bash
+kubectl create namespace argocd
+kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
+```
+
+Verify the installation by running `kubectl get pods -n argocd`.
+
+2. Expose the ArgoCD service by running `kubectl port-forward svc/argocd-server -n argocd 8080:443`. You can now access the ArgoCD UI at `http://localhost:8080`.
+
+3. Log in to the ArgoCD UI with the default username `admin`.
+
+You can obtain the default password by running the following command:
+
+### Unix-based
+```bash
+kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d`
+```
+
+### Windows
+```powershell
+kubectl get secret argocd-initial-admin-secret -n argocd -o jsonpath="{.data.password}" | ForEach-Object { [System.Text.Encoding]::UTF8.GetString([Convert]::FromBase64String($_)) }
+```
+
+4. If using Docker Desktop Kubernetes, you'll have to register the cluster with ArgoCD.
+
+First, get the Kubernetes API server URL by running `kubectl cluster-info`. You can use the URL under `Kubernetes control plane` as the cluster URL.
+
+Then, run the following command to register the cluster:
+```bash
+argocd cluster add <cluster-url>
+```
+
+Note that this requires the `argocd` CLI to be installed. You can install it by running `brew install argocd` on MacOS, or by following the instructions at https://argo-cd.readthedocs.io/en/stable/cli_installation/.
+
+5. Create a new application in ArgoCD by clicking on the `New App` button. Fill in the following details and then click `Create`:
+- Application Name: `tf-model`
+- Project: `default`
+- Repository URL: `https://github.com/jescalada/kubernetes-argo-ml-integration.git`
+- Path: `manifests`
+- Cluster: `<your-cluster-url>`
+
+6. You can now sync the application by clicking on the `Sync` button. This will deploy the model to Kubernetes and keep it in sync with the repo.
+
+If everything is set up correctly, you should see the status of the application as "Synced" and "Healthy" in the ArgoCD UI.
+
