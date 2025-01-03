@@ -109,3 +109,10 @@ Note that this requires the `argocd` CLI to be installed. You can install it by 
 
 If everything is set up correctly, you should see the status of the application as "Synced" and "Healthy" in the ArgoCD UI.
 
+7. Due to how ArgoCD authentication works, you will have to use OAuth to access the API:
+
+> For Single Sign-On users, the user completes an OAuth2 login flow to the configured OIDC identity provider (either delegated through the bundled Dex provider, or directly to a self-managed OIDC provider). This JWT is signed & issued by the IDP, and expiration and revocation is handled by the provider. Dex tokens expire after 24 hours.
+
+In this case, you'll have to set up an OIDC provider and configure ArgoCD to use it. You can find more details at https://argo-cd.readthedocs.io/en/stable/operator-manual/user-management/.
+
+Once you set up the OIDC provider along with the RBAC settings, you should see any previously created applications in the ArgoCD UI (as long as you have the necessary permissions). You can test the OIDC setup by trying to add an application to ArgoCD. An error will be displayed if the setup is incorrect.
