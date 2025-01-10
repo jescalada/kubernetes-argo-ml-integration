@@ -17,7 +17,7 @@ model = Sequential([
 model.compile(optimizer='adam', loss='binary_crossentropy', metrics=['accuracy'])
 
 # Train the model
-model.fit(X, y, epochs=20, batch_size=32)
+model.fit(X, y, epochs=10, batch_size=32)
 
 # Save the model
 model.save('model/')
