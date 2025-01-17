@@ -4,7 +4,7 @@ metadata:
   name: tf-model-deployment
   namespace: default
   annotations:
-    lastUpdated: "2025-01-11" # Edit to trigger ArgoCD sync
+    lastUpdated: "2025-01-17" # Edit to trigger ArgoCD sync
 spec:
   replicas: 2
   selector:
